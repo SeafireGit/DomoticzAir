@@ -19,7 +19,7 @@ url = site+city+"/?token="+token
 #### Domobox
 
 domobox = "https://domobox.maison.lan/json.htm?"
-IDX_alerte = "35"
+IDX_alert = "35"
 
 #### Air level
 
@@ -28,8 +28,6 @@ table = {0:'Pas de données', 1:'Bon',2:'Moyen',3:'Malsain pour gp sensibles',4:
 ##################
 # Fonctions
 ##################
-
-### Get air quality value
 
 def getAirQuality(consolidatedUrl):
   """ Récupère la qualité de l'air sur le site World Air Quality Index """
@@ -49,14 +47,12 @@ def getAlertState(id):
     level = i["Level"]
   return(level)
 
-#def updateAlert(now):
-  
+def updateAlert(now):
+  """ Update la device alert avec le niveau now """
+  requests.get(domobox+'type=command&param=udevice&idx='+IDX_alert+'&nvalue='+str(now)+'&svalue='+table[now],verify=False)
 
-if __name__ == '__main__':
-  print(getAirQuality(url),type(getAirQuality(url)))
-  print(getAlertState(IDX_alerte),type(getAlertState(IDX_alerte)))
-
-  mesure = getAirQuality(url)
+def defineLevel(mesure):
+  """ Définit le niveau de l'alerte en fonction de la valeur de l'index recue """
   if ( 1 < mesure <= 50):
     now = 1
   elif ( 50 < mesure <= 100):
@@ -65,5 +61,15 @@ if __name__ == '__main__':
     now = 3
   elif ( 150 < mesure):
     now = 4
+  return(now)
 
-print(now)
+##################
+# Execution
+##################
+
+if __name__ == '__main__':
+
+  actualLevel = defineLevel(getAirQuality(url))
+
+  if ( actualLevel != getAlertState(IDX_alert)):
+    updateAlert(actualLevel)
