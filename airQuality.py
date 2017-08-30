@@ -19,7 +19,7 @@ url = site+city+"/?token="+token
 #### Domobox
 
 domobox = "https://domobox.maison.lan/json.htm?"
-IDX_alerte = "33"
+IDX_alerte = "35"
 
 ##################
 # Fonctions
@@ -27,14 +27,23 @@ IDX_alerte = "33"
 
 ### Get air quality value
 
-
 def getAirQuality(consolidatedUrl):
-  
+  """ Récupère la qualité de l'air sur le site World Air Quality Index """
   r = requests.get(consolidatedUrl)
   raw = r.json()
   for key, value in raw.items():
     if (key == "data"):
       aqi = int(value['aqi'])
   return(aqi)
+
+def getAlerteState(id):
+  """ Récupère le status actuel de l'alerte """
+  urlDomo = domobox+"type=devices&rid="+id
+  r = requests.get(urlDomo,verify=False)
+  dataDB = r.json()
+  for i in dataDB["result"]:
+    level = i["Level"]
+  return(level)
+  
 
 print(getAirQuality(url),type(getAirQuality(url)))
