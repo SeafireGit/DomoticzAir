@@ -10,7 +10,7 @@ class AirTest(unittest.TestCase):
     """ Initialisation """
 
   def test_getAirQuality_int(self):
-    """ Test que le retour de la connection au site renvoi un entier compris entre 0 et x """
+    """ Test que le retour de la connection au site renvoi un entier """
     test = getAirQuality(url)
     self.assertTrue( type(test) == int)
 
@@ -19,6 +19,11 @@ class AirTest(unittest.TestCase):
     """ Test que le retour de la connection au site renvoi un entier compris entre 0 et x """
     test = getAirQuality(url)
     self.assertTrue( 0 < test < 400)
+
+  def test_getAlertState(self):
+    """ Test que le retour de la récupération de l'état de l'alerte est un entier entre 1 et 4 """
+    test = getAlertState(IDX_alerte)
+    self.assertTrue( 0 <= test <= 4)
 
 if __name__ == '__main__':
     unittest.main()
