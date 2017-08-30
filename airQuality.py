@@ -21,6 +21,10 @@ url = site+city+"/?token="+token
 domobox = "https://domobox.maison.lan/json.htm?"
 IDX_alerte = "35"
 
+#### Air level
+
+table = {0:'Pas de données', 1:'Bon',2:'Moyen',3:'Malsain pour gp sensibles',4:'Malsain'}
+
 ##################
 # Fonctions
 ##################
@@ -44,7 +48,22 @@ def getAlertState(id):
   for i in dataDB["result"]:
     level = i["Level"]
   return(level)
+
+#def updateAlert(now):
   
 
-print(getAirQuality(url),type(getAirQuality(url)))
-print(getAlertState(IDX_alerte),type(getAlertState(IDX_alerte)))
+if __name__ == '__main__':
+  print(getAirQuality(url),type(getAirQuality(url)))
+  print(getAlertState(IDX_alerte),type(getAlertState(IDX_alerte)))
+
+  mesure = getAirQuality(url)
+  if ( 1 < mesure <= 50):
+    now = 1
+  elif ( 50 < mesure <= 100):
+    now = 2
+  elif ( 100 < mesure <= 150):
+    now = 3
+  elif ( 150 < mesure):
+    now = 4
+
+print(now)
