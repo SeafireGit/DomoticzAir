@@ -36,7 +36,7 @@ def getAirQuality(consolidatedUrl):
       aqi = int(value['aqi'])
   return(aqi)
 
-def getAlerteState(id):
+def getAlertState(id):
   """ Récupère le status actuel de l'alerte """
   urlDomo = domobox+"type=devices&rid="+id
   r = requests.get(urlDomo,verify=False)
@@ -47,3 +47,4 @@ def getAlerteState(id):
   
 
 print(getAirQuality(url),type(getAirQuality(url)))
+print(getAlertState(IDX_alerte),type(getAlertState(IDX_alerte)))
