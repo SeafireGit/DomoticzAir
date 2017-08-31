@@ -30,38 +30,38 @@ table = {0:'Pas de données', 1:'Bon',2:'Moyen',3:'Malsain pour gp sensibles',4:
 ##################
 
 def getAirQuality(consolidatedUrl):
-  """ Récupère la qualité de l'air sur le site World Air Quality Index """
-  r = requests.get(consolidatedUrl)
-  raw = r.json()
-  for key, value in raw.items():
-    if (key == "data"):
-      aqi = int(value['aqi'])
-  return(aqi)
+    """ Récupère la qualité de l'air sur le site World Air Quality Index """
+    r = requests.get(consolidatedUrl)
+    raw = r.json()
+    for key, value in raw.items():
+      if (key == "data"):
+        aqi = int(value['aqi'])
+    return(aqi)
 
 def getAlertState(id):
-  """ Récupère le status actuel de l'alerte """
-  urlDomo = domobox+"type=devices&rid="+id
-  r = requests.get(urlDomo,verify=False)
-  dataDB = r.json()
-  for i in dataDB["result"]:
-    level = i["Level"]
-  return(level)
+    """ Récupère le status actuel de l'alerte """
+    urlDomo = '{0}type=devices&rid={1}'.format(domobox,id)
+    r = requests.get(urlDomo,verify=False)
+    dataDB = r.json()
+    for i in dataDB["result"]:
+      level = i["Level"]
+    return(level)
 
 def updateAlert(now):
-  """ Update la device alert avec le niveau now """
-  requests.get(domobox+'type=command&param=udevice&idx='+IDX_alert+'&nvalue='+str(now)+'&svalue='+table[now],verify=False)
+    """ Update la device alert avec le niveau now """
+    requests.get('{0}type=command&param=udevice&idx={1}&nvalue={2}&svalue={3}'.format(domobox,IDX_alert,str(now),table[now]),verify=False)
 
 def defineLevel(mesure):
-  """ Définit le niveau de l'alerte en fonction de la valeur de l'index recue """
-  if ( 1 < mesure <= 50):
-    now = 1
-  elif ( 50 < mesure <= 100):
-    now = 2
-  elif ( 100 < mesure <= 150):
-    now = 3
-  elif ( 150 < mesure):
-    now = 4
-  return(now)
+    """ Définit le niveau de l'alerte en fonction de la valeur de l'index recue """
+    if ( 1 < mesure <= 50):
+      now = 1
+    elif ( 50 < mesure <= 100):
+      now = 2
+    elif ( 100 < mesure <= 150):
+      now = 3
+    elif ( 150 < mesure):
+      now = 4
+    return(now)
 
 ##################
 # Execution
@@ -69,7 +69,8 @@ def defineLevel(mesure):
 
 if __name__ == '__main__':
 
-  actualLevel = defineLevel(getAirQuality(url))
+    actualLevel = defineLevel(getAirQuality(url))
+    print(actualLevel)    # Debug
 
-  if ( actualLevel != getAlertState(IDX_alert)):
-    updateAlert(actualLevel)
+    if ( actualLevel != getAlertState(IDX_alert)):
+      updateAlert(actualLevel)
